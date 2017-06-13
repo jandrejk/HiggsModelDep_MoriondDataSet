@@ -491,16 +491,25 @@ def OrderPerCategory (array,n) :
     
 # ---------------------------------------------------------------------------    
 def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False,
-                savepath = None,title=None,absolute=True,
-                model_processes=[]):
+                savepath = None,title=None,plot_title=[],absolute=True,
+                model_processes=[],DiffGenVariable=False):
     
     
     
     target = target_name(column)
     #extract the number of features that belong to column
     nstats = np.unique(df[target]).size
+    
+    #In case DiffGenVariable==True this will be later filled with the BDT 
+    #preiction of number reco events in (ij) reco coming from l gen bin
+    N_reco_ij_l = []
+    
     if 'recoPt' in target :
         nstats =25
+    
+    if 'recoNjets2p5' in target :
+        nstats =16
+    
     
     print("There are " + str(nstats) + " features of type " + str(target))
     
@@ -532,7 +541,7 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
         predh = OrderPerCategory(predh,3)
 
         
-        print predh
+        #print predh
         
     bins = np.arange(-1.5+first,nstats-0.5)
     corr = predh[first:]
@@ -548,15 +557,18 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
         axes = None
         top = plt
         
-    #fig.tight_layout()
-    fig.suptitle(r'response matrix '+ r'$K^{ij}_l$'+'\n',fontsize=20,y=1.03)
+    fig.tight_layout()
+    #fig.suptitle(r'response matrix '+ r'$K^{ij}_l$'+'\n',fontsize=20,y=1.03)
+    fig.suptitle(plot_title+'\n'+'\n',fontsize=25,y=1.2)
+    
     
     xc = bins[1:]-binw*0.5     
     corr_label = 'BDT pred'
     
     top.bar(xc-.5,corr,width=binw,label=corr_label,
             alpha=0.5,color='green',linewidth=0.5, edgecolor='black')
-
+    
+    
     
     if absolute :
         top.errorbar( xc, data,ls='None', xerr=np.ones_like(data)*binw*0.5, yerr=np.sqrt(data), color='black', label=r'true $1 \sigma$' )
@@ -579,26 +591,6 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
         
         hist_sigma_0 = np.sqrt(trueh_posw + trueh_negw)
         #print hist_sigma_0
-        """
-        for k in xrange(4) :
-            fig, ax = plt.subplots(1, 1)
-
-            mu1 = trueh_posw[k]
-            mu2 = trueh_negw[k]
-            
-            x = np.arange(skellam.ppf(0.01, mu1, mu2),
-              skellam.ppf(0.99, mu1, mu2))
-
-            
-            ax.plot(x, skellam.pmf(x, mu1, mu2), 'bo', ms=8, label='skellam pmf')
-            ax.vlines(x, 0, skellam.pmf(x, mu1, mu2), colors='b', lw=5, alpha=0.5)
-
-            rv = skellam(mu1, mu2)
-            ax.vlines(x, 0, rv.pmf(x), colors='k', linestyles='-', lw=1,
-                    label='frozen pmf')
-            ax.legend(loc='best', frameon=False)
-            plt.show()
-        """
         
         #one sigma
         hist_sigma = 1.*trueh*hist_sigma_0/hist_mu_0
@@ -661,7 +653,7 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
     #add titles
     DrawMassResCat(plot_instance=top)
     print title
-    print title[-1]
+    #print title[-1]
     
     
     if axes == None: axes = fig.axes
@@ -712,27 +704,42 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
     #    bbox={'facecolor':'red', 'alpha':0.5, 'pad':10})
 
     
-    gen_level = r'$l=$ '+'gen'+column[4:]
-    gen_level += ':   ' +GetPtBinRange (bin_index=title[-1]) 
-    
     
     
     process = r'      processe(s): '+'\n'+"\n".join(model_processes)
     details = '\n'+'      details:'+'\n'+ "\n".join([GetBSMDetails(model=m) for m in model_processes if 'BSM' in m])
     
+    if DiffGenVariable :
+        if 'recoPt' in target :
+            gen_level = r'$l=$ '+'gen'+column[4:]
+            gen_level += ':   ' +GetPtBinRange (bin_index=title[-1])     
     
-    
-    
-    text = gen_level +'\n'+'\n'+process+'\n'+details
-    
-    plt.text(24.54, 1.6, text, size=12, rotation=0.,
-         ha="left", va="center",
-         bbox=dict(boxstyle="round",
-                   #ec=(1., 0.5, 0.5),
-                   fc=(1, 1, 1),
-                   )
-         )
+        if 'recoNjets2p5' in target :
+            gen_level = r'$l=$ '+'gen'+column[4:]
+            gen_level += ':   ' +GetNjetsBinRange (bin_index=title[-1])     
 
+        process = r'      processe(s): '+'\n'+"\n".join(model_processes)
+        details = '\n'+'      details:'+'\n'+ "\n".join([GetBSMDetails(model=m) for m in model_processes if 'BSM' in m])
+
+        if ('BSM' in details) :
+            text = gen_level +'\n'+'\n'+process+'\n'+details
+        else :
+            text = gen_level +'\n'+'\n'+process
+        """
+        generate response matrix and give it back
+        """
+        N_reco_ij_l = predh
+        
+    else :
+        process = r'      processe(s): '+'\n'+"\n".join(model_processes)
+        details = '\n'+'      details:'+'\n'+ "\n".join([GetBSMDetails(model=m) for m in model_processes if 'BSM' in m])
+        print model_processes
+        if ('BSM' in details) :
+            print details
+            text = process+'\n'+details
+        else :
+            text = process
+    DrawAdditionalTextBox(text=text,ax=top)
 
         
     if (savepath != None) :
@@ -742,7 +749,18 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
             os.mkdir(savepath)
             plt.savefig(savepath+'/'+title,bbox_inches='tight')
      
-    return predh
+    return N_reco_ij_l
+
+
+
+def DrawAdditionalTextBox(ax,text) :
+    plt.text(1.04, 0.5, text, size=18, rotation=0.,
+             ha="left", va="center",
+             transform = ax.transAxes,
+             bbox=dict(boxstyle="round",
+                       fc=(1, 1, 1),
+                      ),
+            )
 
     
 def GetBSMDetails (model) :
@@ -753,6 +771,18 @@ def GetBSMDetails (model) :
     if ('BSM3' in model) :
         return 'BSM3: '+'\n'+ r'$m_\tilde{b}=500 \, \mathrm{ GeV}$ '+'\n'+'$m_\mathrm{LSP}=1 \, \mathrm{ GeV}$ '
     
+def GetNjetsBinRange (bin_index) :
+    if (bin_index == '0') :
+        return '0'
+    if (bin_index == '1') :
+        return '1'
+    if (bin_index == '2') :
+        return '2'
+    if (bin_index == '3') :
+        return '3'
+    if (bin_index == '4') :
+        return '4+'
+
     
     
 def GetPtBinRange (bin_index) :
