@@ -59,6 +59,8 @@ def readRoot(fname,process,treepfx,ncat,genBranches,recoBranches,gentreepfx=None
     trees = map(lambda x: treepfx+"_SigmaMpTTag_%d" %x, xrange(ncat))
     gtree = gentreepfx+"_NoTag_0"
     
+    print 'here is gtree:', gtree
+    print 'trees is ', trees
     dfs = [rpd.read_root(fname,gtree,columns=genBranches)]+map(lambda x: 
                                                                rpd.read_root(fname,x,columns=genBranches+recoBranches), trees )
     
@@ -198,6 +200,22 @@ class EfficiencyFitter(object):
             self.df['absGenRapidity'] = np.abs(self.df['genRapidity'])
         
         Xbr = ['genPt','absGenRapidity','genLeadGenIso','genSubleadGenIso']
+        
+        
+        Xbr = ['genPt','absGenRapidity',
+               'absCosDeltaAlpha01','absCosDeltaAlpha02','absCosDeltaAlpha03',
+               'absCosDeltaAlpha04','absCosDeltaAlpha05','absCosDeltaAlpha12',
+               'absCosDeltaAlpha13','absCosDeltaAlpha14','absCosDeltaAlpha15',
+               'absCosDeltaAlpha23','absCosDeltaAlpha24','absCosDeltaAlpha25',
+               'absCosDeltaAlpha34','absCosDeltaAlpha35','absCosDeltaAlpha45',
+               'absCosDeltaPhi01','absCosDeltaPhi02','absCosDeltaPhi03',
+               'absCosDeltaPhi04','absCosDeltaPhi05','absCosDeltaPhi12',
+               'absCosDeltaPhi13','absCosDeltaPhi14','absCosDeltaPhi15',
+               'absCosDeltaPhi23','absCosDeltaPhi24','absCosDeltaPhi25',
+               'absCosDeltaPhi34','absCosDeltaPhi35','absCosDeltaPhi45'
+              ]
+        
+        
         self.clfs['class'] = self.runFit(Xbr,'class',wbr=weight_name,**kwargs)
         
         return self.clfs['class']

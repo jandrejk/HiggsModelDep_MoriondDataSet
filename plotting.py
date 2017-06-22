@@ -502,7 +502,8 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
     
     #In case DiffGenVariable==True this will be later filled with the BDT 
     #preiction of number reco events in (ij) reco coming from l gen bin
-    N_reco_ij_l = []
+    N_reco_pred_ij_l = []
+    N_reco_true_ij_l = []
     
     if 'recoPt' in target :
         nstats =25
@@ -728,7 +729,8 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
         """
         generate response matrix and give it back
         """
-        N_reco_ij_l = predh
+        N_reco_pred_ij_l = predh
+        N_reco_true_ij_l = trueh
         
     else :
         process = r'      processe(s): '+'\n'+"\n".join(model_processes)
@@ -749,7 +751,7 @@ def draw_data_mc(df,column,first=0,figsize=(8,6),var=None,logy=False,ratio=False
             os.mkdir(savepath)
             plt.savefig(savepath+'/'+title,bbox_inches='tight')
      
-    return N_reco_ij_l
+    return N_reco_pred_ij_l, N_reco_true_ij_l
 
 
 
