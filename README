@@ -23,3 +23,16 @@ plotting.py
 A DESCRIPTION OF THE NOTEBOOKS' CONTENT IS GIVEN IN THE FOLLOWING:
 
 1) Train_Configurable_Refactor.ipynb
+in this notebook the BDTs, classifiers, are trained. The already trained classifiers are stored in:
+/mnt/t3nfs01/data01/shome/jandrejk/higgs_model_dep/MoriondAnalysis/classifiers/
+and are available until 11.11.2017!
+Each classifier has a .pkl, .root and a .txt file associated.
+The .txt file contains details about the training and the hyper-parameters.
+
+2) ScriptForResponseMatrixAndClosurePlots.ipynb
+This notebook loads trained classifiers. It produces the closure plots and saves the histograms of the
+closure plots in form of matrices in .npy files. These files are used in the notebooks 3) and 4) to 
+compute the response matrices without the need of loading the classifiers from scratch.
+
+3) EffectOfDifferentResponses.ipynb
+4) DiffXsecHistos.ipynb
