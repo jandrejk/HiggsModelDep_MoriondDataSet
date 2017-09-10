@@ -1,0 +1,25 @@
+This code is set up to study the model-dependence in H->gamma gamma fiducial differential cross sections.
+We are training a BDT to parametrize the response matrix. The response matrix is the object that maps events from particle 
+level to detector level. The training set consists of events comming from the four dominant Higgs production mechanisms
+at the LHC, that are ggF, VBF, VH and ttH
+Closure plots compare the number of events in each detector level bin predicted by the BDT and compare them to the truth
+inferred from the MC test set. It is important to not test the BDT on any events used for the training.
+The effect of using different response matrices is studied and the unfolded particle level spectra are plotted.
+
+Important Ipython notebooks are:
+Train_Configurable_Refactor.ipynb
+ScriptForResponseMatrixAndClosurePlots.ipynb
+EffectOfDifferentResponses.ipynb
+DiffXsecHistos.ipynb
+
+Important python files are:
+angles.py
+train.py
+util.py
+chi2_stats.py
+LikelihoodProfile.py
+plotting.py
+
+A DESCRIPTION OF THE NOTEBOOKS' CONTENT IS GIVEN IN THE FOLLOWING:
+
+1) Train_Configurable_Refactor.ipynb
