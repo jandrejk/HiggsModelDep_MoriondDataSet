@@ -42,3 +42,10 @@ test sample. The response matrices are loaded from the directory specified in th
 "ScriptForResponseMatrixAndClosurePlots". 
 
 4) DiffXsecHistos.ipynb
+This notebook is plotting the distribution of fiducial differential cross sections for different models 
+and 2 scenrios:
+1) The response matrix is the one coming from the BDT prediction 
+2) The response matrix is the one coming from the SM MC test sample
+The differential x-sec are computed with respect to recoPt and recoNjets2p5. For that the profiles around 
+the best fit fid diff cross sections are computed in the same way as in the notebook "EffectOfDifferentResponses" 
+but this time the profiles are plotted together in a histogram.
