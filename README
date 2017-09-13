@@ -35,4 +35,10 @@ closure plots in form of matrices in .npy files. These files are used in the not
 compute the response matrices without the need of loading the classifiers from scratch.
 
 3) EffectOfDifferentResponses.ipynb
+This notebook likelihood plots the profiles around the best fit fiducial differential cross sections 
+saves them (if a path is provided).
+The profiles are computed with the BDT predicted response matrix and with the matrix build from the SM MC  
+test sample. The response matrices are loaded from the directory specified in the notebook 
+"ScriptForResponseMatrixAndClosurePlots". 
+
 4) DiffXsecHistos.ipynb
