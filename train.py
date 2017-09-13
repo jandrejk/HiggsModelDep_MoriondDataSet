@@ -189,32 +189,45 @@ class EfficiencyFitter(object):
            self.df = df
         
         print("The number of selected events are " + str(self.df.index.size))
+        print('==========================')
+        print 'the tree prefix is ', treepfx
+        print 'the tree gen-prefix is ', gentreepfx
+        print('==========================')
             
         return self.df
         
 
     # ---------------------------------------------------------------------------
     def fitClass(self,weight_name='absweight',**kwargs):
-
+        
         if not 'absGenRapidity' in self.df.columns:
             self.df['absGenRapidity'] = np.abs(self.df['genRapidity'])
         
         Xbr = ['genPt','absGenRapidity','genLeadGenIso','genSubleadGenIso']
         
+        """
+        extension = ['absCosDeltaAlphaLeadGamma0','absCosDeltaAlphaLeadGamma1','absCosDeltaAlphaLeadGamma2',
+                     'absCosDeltaAlphaLeadGamma3','absCosDeltaAlphaLeadGamma4','absCosDeltaAlphaLeadGamma5',
+                     'absCosDeltaAlphaSubleadGamma0','absCosDeltaAlphaSubleadGamma1','absCosDeltaAlphaSubleadGamma2',
+                     'absCosDeltaAlphaSubleadGamma3','absCosDeltaAlphaSubleadGamma4','absCosDeltaAlphaSubleadGamma5',
+                     'absCosDeltaPhiLeadGamma0','absCosDeltaPhiLeadGamma1','absCosDeltaPhiLeadGamma2',
+                     'absCosDeltaPhiLeadGamma3','absCosDeltaPhiLeadGamma4','absCosDeltaPhiLeadGamma5',
+                     'absCosDeltaPhiSubleadGamma0','absCosDeltaPhiSubleadGamma1','absCosDeltaPhiSubleadGamma2',
+                     'absCosDeltaPhiSubleadGamma3','absCosDeltaPhiSubleadGamma4','absCosDeltaPhiSubleadGamma5',
+                     'absCosDeltaPhiLeadGammaSubleadGamma',
+                     'absCosDeltaAlphaLeadGammaSubleadGamma',
+                     'absCosDeltaAlpha01','absCosDeltaAlpha02','absCosDeltaAlpha03','absCosDeltaAlpha04',
+                     'absCosDeltaAlpha05','absCosDeltaAlpha12','absCosDeltaAlpha13','absCosDeltaAlpha14',
+                     'absCosDeltaAlpha15','absCosDeltaAlpha23','absCosDeltaAlpha24','absCosDeltaAlpha25',
+                     'absCosDeltaAlpha34','absCosDeltaAlpha35','absCosDeltaAlpha45',
+                     'absCosDeltaPhi01','absCosDeltaPhi02','absCosDeltaPhi03','absCosDeltaPhi04',
+                     'absCosDeltaPhi05','absCosDeltaPhi12','absCosDeltaPhi13','absCosDeltaPhi14',
+                     'absCosDeltaPhi15','absCosDeltaPhi23','absCosDeltaPhi24','absCosDeltaPhi25',
+                     'absCosDeltaPhi34','absCosDeltaPhi35','absCosDeltaPhi45']
         
-        Xbr = ['genPt','absGenRapidity',
-               'absCosDeltaAlpha01','absCosDeltaAlpha02','absCosDeltaAlpha03',
-               'absCosDeltaAlpha04','absCosDeltaAlpha05','absCosDeltaAlpha12',
-               'absCosDeltaAlpha13','absCosDeltaAlpha14','absCosDeltaAlpha15',
-               'absCosDeltaAlpha23','absCosDeltaAlpha24','absCosDeltaAlpha25',
-               'absCosDeltaAlpha34','absCosDeltaAlpha35','absCosDeltaAlpha45',
-               'absCosDeltaPhi01','absCosDeltaPhi02','absCosDeltaPhi03',
-               'absCosDeltaPhi04','absCosDeltaPhi05','absCosDeltaPhi12',
-               'absCosDeltaPhi13','absCosDeltaPhi14','absCosDeltaPhi15',
-               'absCosDeltaPhi23','absCosDeltaPhi24','absCosDeltaPhi25',
-               'absCosDeltaPhi34','absCosDeltaPhi35','absCosDeltaPhi45'
-              ]
-        
+        Xbr.extend(extension)
+        """
+        print "Use the following branches for the class training: ", Xbr
         
         self.clfs['class'] = self.runFit(Xbr,'class',wbr=weight_name,**kwargs)
         

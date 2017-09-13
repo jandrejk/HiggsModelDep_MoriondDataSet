@@ -176,6 +176,7 @@ def loadOrMake():
         if not forceMake:
             pprint(onDisk.df.columns)
         pprint(onDisk.clfs)
+     
         
         print('onDisk.genBranches', onDisk.genBranches)
         print('params["genBranches"]', params["genBranches"])
@@ -234,7 +235,9 @@ def loadOrMake():
         ## made.readData(params["ncats"],params["genBranches"],params["recoBranches"],
         ##               [(fileName,None,params["pfx"])])
         
+        
         #shuffles dataset and orders according this random indices
+        
         print('shuffling dataset')
         np.random.seed(params['rndseed'])
         made.df['random_index'] = np.random.permutation(range(made.df.index.size))
@@ -250,6 +253,14 @@ def loadOrMake():
         JetRapidityNames = ['genJet2p5Rapidity0','genJet2p5Rapidity1',
                             'genJet2p5Rapidity2','genJet2p5Rapidity3','genJet2p5Rapidity4','genJet2p5Rapidity5']
         for jetRapName in JetRapidityNames :
+            #replace gen with absGen (mind the capital G)
+            if jetRapName in made.df.columns and ( not 'abs'+'G'+jetRapName[1:] in made.df.columns ):
+                made.df['abs'+'G'+jetRapName[1:]] = np.abs(made.df[jetRapName])
+        
+        #rapidities bellow 20 GeV
+        JetRapidityNames2 = ['genJet2p5pt20Rapidity0','genJet2p5pt20Rapidity1',               
+                             'genJet2p5pt20Rapidity2','genJet2p5pt20Rapidity3','genJet2p5pt20Rapidity4','genJet2p5pt20Rapidity5']
+        for jetRapName in JetRapidityNames2 :
             #replace gen with absGen (mind the capital G)
             if jetRapName in made.df.columns and ( not 'abs'+'G'+jetRapName[1:] in made.df.columns ):
                 made.df['abs'+'G'+jetRapName[1:]] = np.abs(made.df[jetRapName])
@@ -433,7 +444,8 @@ def runTraining(effFitter,useAbsWeight=True):
                 effFitter.fitBins(key,classifier=classifier,**train_params)
         else :
             if key == 'class':
-                effFitter.fitClass(classifier=classifier,weight_name='weight',**train_params)
+                effFitter.fitClass(classifier=classifier,weight_name='weight',ExtendClassBranches=ExtendClassBranches,
+                                   **train_params)
             else:
                 effFitter.fitBins(key,classifier=classifier,weight_name='weight',**train_params)
         
